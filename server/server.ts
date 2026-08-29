@@ -10,7 +10,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/', (req, res)=>{
-    res.send("server is running")
+    res.send("Welcome to Acme AI")
 })
 
 app.listen(port, ()=>{
