@@ -1,11 +1,11 @@
-import {generateObject} from 'ai'
+import {streamText} from 'ai'
 import { google } from '@ai-sdk/google'
 import {  meetingSchema, type meeting } from '../utils/meeting.schema.js'
 
 export const analyzeText = async (transcript: string) =>{
-const {object} = await generateObject({
+const result =  streamText({
     model : google('gemini-3.5-flash'),
-    schema : meetingSchema,
+    // schema : meetingSchema,
     prompt : 
     `You are mom.ai, an AI meeting assistant.
 
@@ -37,5 +37,5 @@ ${transcript}
 
 })
 
-return object
+return result
 }

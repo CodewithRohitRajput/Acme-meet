@@ -12,9 +12,9 @@ export const analyzeMeetingController = async (req: Request, res: Response) => {
         })
     }
     const result = await analyzeText(transcript)
-
-    return res.status(200).json({
-        success: true,
-        data: result
-    })
+    result.pipeTextStreamToResponse(res)
+    // return res.status(200).json({
+    //     success: true,
+    //     data: result
+    // })
 }
