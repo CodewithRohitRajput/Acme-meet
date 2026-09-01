@@ -1,9 +1,11 @@
 import express from 'express'
-import { analyzeMeetingController, getMeeting } from "../controllers/meeting.controller.js";    
+import { analyzeMeetingController, getMeeting, getOneMeeting , deleteMeeting} from "../controllers/meeting.controller.js";    
 const router = express.Router()
 
 router.post('/analyze', analyzeMeetingController)
-router.post('/get', getMeeting)
+router.get('/get', getMeeting)
+router.get('/get/:id', getOneMeeting)
+router.delete('/get/:id', deleteMeeting)
 // router.post('/create', createMeeting)
 
 

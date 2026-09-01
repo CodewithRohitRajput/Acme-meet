@@ -8,6 +8,21 @@ export const getMeeting = async (req: Request, res: Response) => {
 
 }
 
+export const getOneMeeting = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const meeting = await Meeting.findById(id)
+
+    return res.status(200).json({success: true, data: meeting})
+}
+
+export const deleteMeeting = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const deleted = await Meeting.findByIdAndDelete(id)
+    return res.status(200).json({
+        success: true,
+        message: "Deleted"
+    })
+}
 
 export const analyzeMeetingController = async (req: Request, res: Response) => {
     const {transcript} = req.body;
