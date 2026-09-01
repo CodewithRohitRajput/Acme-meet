@@ -1,6 +1,13 @@
 import type { Request, Response } from "express";
 import { analyzeText } from "../services/gemini.service.js";
-import { success } from "zod";
+import Meeting from "../models/Meeting.js";
+
+export const getMeeting = async (req: Request, res: Response) => {
+    const meetings = await Meeting.find().sort({createdAt: -1})
+    return res.status(200).json({success: true, data: meetings})
+
+}
+
 
 export const analyzeMeetingController = async (req: Request, res: Response) => {
     const {transcript} = req.body;
@@ -10,11 +17,20 @@ export const analyzeMeetingController = async (req: Request, res: Response) => {
             success: false,
             messsage: "Transcript is required"
         })
-    }
+        }
+
+        const newMeet = await Meeting.create({transcript})
     const result = await analyzeText(transcript)
-    result.pipeTextStreamToResponse(res)
-    // return res.status(200).json({
-    //     success: true,
-    //     data: result
-    // })
+    
+    // result.pipeTextStreamToResponse(res)
+
+    // const text = await result.text
+
+   const updatedMeeting =  await Meeting.findByIdAndUpdate( newMeet._id,{ analysis: result}, {new: true})
+
+    // console.log({id: newMeet._id}, updatedMeeting)
+    return res.status(200).json({
+        success: true,
+        data: result
+    })
 }

@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import { connectDB } from './config/db.js'
 
 import meetingRoute from './routes/meeting.routes.js'
 
@@ -10,6 +11,7 @@ dotenv.config()
 
 app.use(express.json())
 app.use(cors())
+ await connectDB()
 
 // app.use('/', (req, res)=>{
 //     res.send("Welcome to Acme AI")
