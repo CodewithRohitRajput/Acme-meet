@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { analyzeText } from "../services/gemini.service.js";
 import Meeting from "../models/Meeting.js";
+import { transcribeSpeech } from "../services/gemini.service.js";
 
 export const getMeeting = async (req: Request, res: Response) => {
     const meetings = await Meeting.find().sort({createdAt: -1})
@@ -47,5 +48,25 @@ export const analyzeMeetingController = async (req: Request, res: Response) => {
     return res.status(200).json({
         success: true,
         data: result
+    })
+}
+
+export const transcribeMeeting = async (req : Request, res: Response) => {
+    const audio = req.file
+
+    if(!audio) return res.status(400).json({
+        success: false,
+        message: "Audio file is required"
+    })
+
+const text = await transcribeSpeech(audio.path)
+console.log(text)
+
+    return res.status(200).json({
+        success: true,
+        message: "Audio transcribed",
+        data: {
+            text
+        }
     })
 }

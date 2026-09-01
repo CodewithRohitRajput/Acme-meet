@@ -1,6 +1,7 @@
-import {generateObject} from 'ai'
+import {generateObject, generateText} from 'ai'
 import { google } from '@ai-sdk/google'
 import {  meetingSchema, type meeting } from '../utils/meeting.schema.js'
+import fs from 'fs/promises'
 
 export const analyzeText = async (transcript: string) =>{
 const {object} = await generateObject({
@@ -38,4 +39,29 @@ ${transcript}
 })
 
 return object
+}
+
+export const transcribeSpeech = async (filePath: string) => {
+ const audio = await fs.readFile(filePath)
+
+ const text = await generateText({
+    model: google('gemini-3.5-flash'),
+    messages: [
+          {
+                role: "user",
+                content: [
+                    {
+                        type: "text",
+                        text: "Transcribe this audio exactly. Do not summarize it. Return only the spoken words."
+                    },
+                    {
+                        type: "file",
+                        data: audio,
+                        mediaType: "audio/mpeg"
+                    }]
+
+                }
+    ]
+ })
+ return text
 }
