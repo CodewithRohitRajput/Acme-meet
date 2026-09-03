@@ -28,3 +28,24 @@ export const getGoogleTokens = async (code:string) => {
     const {tokens} = await oauth2client.getToken(code)
     return tokens
 }
+
+
+export const createGoogleDoc = async (accessToken: string, title: string, content: string)=>{
+    oauth2client.setCredentials({
+        access_token: accessToken
+    })
+
+    const docs = google.docs({
+        version: "v1",
+        auth: oauth2client
+    })
+
+    const document = await docs.documents.create({
+        requestBody: {
+            title
+        }
+    })
+
+    
+
+}
