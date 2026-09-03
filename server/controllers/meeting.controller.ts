@@ -60,7 +60,7 @@ export const deleteMeeting = async (req: Request, res: Response) => {
     })
 
      const text = await transcribeSpeech(audio.path)
-    console.log(text)
+    // console.log(text)
     const newMeet = await Meeting.create({transcript: text})
     const analysizedText = await analyzeText(text)
     const updatedMeet = await Meeting.findByIdAndUpdate(newMeet._id, {analysis : analysizedText}, {new : true})

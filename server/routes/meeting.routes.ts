@@ -1,5 +1,5 @@
 import express from 'express'
-import { , getMeeting, getOneMeeting , deleteMeeting} from "../controllers/meeting.controller.js";    
+import {  getMeeting, getOneMeeting , deleteMeeting} from "../controllers/meeting.controller.js";    
 import upload from '../middleware/upload.js';
 import { transcribeMeeting } from '../controllers/meeting.controller.js';
 
