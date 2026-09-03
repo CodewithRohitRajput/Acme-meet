@@ -63,5 +63,5 @@ export const transcribeSpeech = async (filePath: string) => {
                 }
     ]
  })
- return text
+ return text.text
 }
