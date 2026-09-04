@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { analyzeText } from "../services/gemini.service.js";
 import Meeting from "../models/Meeting.js";
 import { transcribeSpeech } from "../services/gemini.service.js";
+import { createCalendarEventsForMeeting } from "../services/googleCalendar.service.js";
 
 export const getMeeting = async (req: Request, res: Response) => {
     const meetings = await Meeting.find().sort({createdAt: -1})
@@ -71,3 +72,55 @@ export const deleteMeeting = async (req: Request, res: Response) => {
         data: updatedMeet
     })
 }
+
+export const syncMeetingToCalendar = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { googleTokens } = req.body;
+
+        if (!googleTokens) {
+            return res.status(400).json({
+                success: false,
+                message: "Google OAuth tokens are required"
+            });
+        }
+
+        const meeting = await Meeting.findById(id);
+
+        if (!meeting || !meeting.analysis) {
+            return res.status(404).json({
+                success: false,
+                message: "Meeting or meeting analysis not found"
+            });
+        }
+
+        const analysisData = meeting.analysis as any;
+        const actionItems = analysisData?.actionItems || [];
+        const summary = analysisData?.summary || "";
+
+        if (actionItems.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No action items found in meeting to schedule"
+            });
+        }
+
+        const createdEvents = await createCalendarEventsForMeeting(
+            googleTokens,
+            summary,
+            actionItems
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Action items synced to Google Calendar successfully",
+            data: createdEvents
+        });
+    } catch (error: any) {
+        console.error("Error syncing calendar events:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Failed to sync action items to Google Calendar"
+        });
+    }
+};

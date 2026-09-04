@@ -19,7 +19,8 @@ export const getGoogleAuthUrl = () => {
         access_type: "offline",
         scope:[
               "https://www.googleapis.com/auth/documents",
-            "https://www.googleapis.com/auth/drive.file"
+            "https://www.googleapis.com/auth/drive.file",
+            "https://www.googleapis.com/auth/calendar.events"
         ]
     })
 }
